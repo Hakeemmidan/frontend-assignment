@@ -15,6 +15,11 @@ describe('GET /discover/movies', () => {
     expect(apiResponseJson.results).toBeInstanceOf(Array);
     expect(apiResponseJson.results[0]).toHaveProperty('id');
   });
+  it('returns the movies sorted by release date in ascending order', () => {
+    const firstMovieDate = new Date(apiResponseJson.results[0].release_date);
+    const lastMovieDate = new Date(apiResponseJson.results[apiResponseJson.results.length - 1].release_date);
+    expect(firstMovieDate.getTime()).toBeGreaterThan(lastMovieDate.getTime());
+  });
 });
 
 describe('GET /search/movie', () => {
