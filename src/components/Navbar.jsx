@@ -2,7 +2,7 @@ import React, { useRef, useContext } from 'react';
 import styled from 'styled-components';
 import logo from '../images/logo.svg';
 import { AppContext } from '../contexts/AppContext';
-import { searchMovies } from '../api_utils/movie_db.api';
+import { getMovies, searchMovies } from '../api_utils/movie_db.api';
 import { MagnifyingGlass } from './MagnifyingGlass'
 import { MOBILE_MAX_WIDTH } from '../constants';
 
@@ -63,18 +63,26 @@ const SearchField = () => {
 
   // Throttled input change handler
   // Source: https://www.codingdeft.com/posts/react-debounce-throttle
-  const handleInputChange = () => {
+  const handleInputChange = async () => {
     if (isThrottling.current) return; // If function is throttling, don't do anything
-    if (!inputRef.current.value.trim()) return; // if input is empty, don't do anything
 
+    const THROTTLE_WAIT_TIME = 500; // in 'ms'
     isThrottling.current = true;
+    
     setTimeout(async () => {
       isThrottling.current = false;
       // Make search API call
-      let apiRes = await searchMovies(inputRef.current.value);
+      let apiRes;
+      if (!inputRef.current.value.trim()) {
+        // if input is emptied, then get most recent movies using 'getMovies'
+        apiRes = await getMovies();
+      } else {
+        // if not empty, then search movies using 'searchMovies'
+        apiRes = await searchMovies(inputRef.current.value);
+      }
       apiRes = await apiRes.json();
       setMovies(apiRes.results);
-    }, 500);
+    }, THROTTLE_WAIT_TIME);
   };
 
   return (
