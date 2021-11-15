@@ -10,6 +10,6 @@ it('renders without crashing', () => {
 
 it('renders Timescale <img> logo', () => {
   const { getByAltText, container } = render(<App />);
-  expect(container.querySelector(`img[alt="timescale_logo"]`)).toBeDefined(); // checks that logo is an <img> tag
-  expect(getByAltText('timescale_logo')).toBeDefined(); // checks its alt text
+  expect(container.querySelector(`img[alt="Timescale logo"]`)).toBeDefined(); // checks that logo is an <img> tag
+  expect(getByAltText('Timescale logo')).toBeDefined(); // checks its alt text
 });
