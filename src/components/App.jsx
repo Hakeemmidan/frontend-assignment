@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import { AppContextProvider } from '../contexts/AppContext';
+import { AppContext } from '../contexts/AppContext';
 import { Navbar } from './Navbar';
 import { CardsContainer } from './CardsContainer';
 import { MOBILE_MAX_WIDTH } from '../constants';
+import { getMovies } from '../api_utils/movie_db.api';
 
 const AppContainer = styled.div`
   margin: 2% 8%;
@@ -12,13 +13,25 @@ const AppContainer = styled.div`
   };
 `;
 
-const App = () => (
-  <AppContainer>
-    <AppContextProvider>
+const App = () => {
+  const { setMovies } = useContext(AppContext);
+
+  useEffect(() => {
+    const setupInitMovies = async () => {
+      let apiRes = await getMovies();
+      apiRes = await apiRes.json();
+      setMovies(apiRes.results);
+    };
+    setupInitMovies();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <AppContainer>
       <Navbar/>
       <CardsContainer/>
-    </AppContextProvider>
-  </AppContainer>
-);
+    </AppContainer>
+  );
+};
 
 export default App;
