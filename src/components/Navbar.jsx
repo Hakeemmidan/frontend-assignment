@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import styled from 'styled-components';
 import logo from '../images/logo.svg';
+import { AppContext } from '../contexts/AppContext';
 import { searchMovies } from '../api_utils/movie_db.api';
 import { MagnifyingGlass } from './MagnifyingGlass'
 import { MOBILE_MAX_WIDTH } from '../constants';
@@ -58,6 +59,7 @@ export const Navbar = () => {
 const SearchField = () => {
   const inputRef = useRef();
   const isThrottling = useRef(false);
+  const { setMovies } = useContext(AppContext);
 
   // Throttled input change handler
   // Source: https://www.codingdeft.com/posts/react-debounce-throttle
@@ -71,7 +73,7 @@ const SearchField = () => {
       // Make search API call
       let apiRes = await searchMovies(inputRef.current.value);
       apiRes = await apiRes.json();
-      console.log(apiRes);
+      setMovies(apiRes.results);
     }, 500);
   };
 

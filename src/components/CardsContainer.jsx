@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AppContext } from '../contexts/AppContext';
 
 export const CardsContainer = () => {
+  const { movies } = useContext(AppContext);
+
   return (
     <div>
       <Card />
@@ -8,6 +11,7 @@ export const CardsContainer = () => {
       <Card />
       <Card />
       <Card />
+      {JSON.stringify(movies)}
     </div>
   );
 };
