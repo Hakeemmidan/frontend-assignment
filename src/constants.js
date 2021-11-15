@@ -1,0 +1,1 @@
+export const MOBILE_MAX_WIDTH = 768; // anythig less than this is considered mobile
