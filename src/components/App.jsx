@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { AppContext } from '../contexts/AppContext';
 import { Navbar } from './Navbar';
-import { CardsContainer } from './CardsContainer';
+import { CardsContainer } from './Cards';
 import { MOBILE_MAX_WIDTH } from '../constants';
 import { getMovies } from '../api_utils/movie_db.api';
 
