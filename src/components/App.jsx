@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { AppContext } from '../contexts/AppContext';
+import { Modal } from './Modal';
 import { Navbar } from './Navbar';
 import { CardsContainer } from './Cards';
 import { MOBILE_MAX_WIDTH } from '../constants';
@@ -8,6 +9,7 @@ import { getMovies } from '../api_utils/movie_db.api';
 
 const AppContainer = styled.div`
   margin: 2% 8%;
+  font-family: sans-serif;
   @media screen and (max-width: ${MOBILE_MAX_WIDTH}px) {
     margin: 5% 2%;
   };
@@ -29,6 +31,7 @@ const App = () => {
 
   return (
     <AppContainer>
+      <Modal/>
       <Navbar/>
       <CardsContainer/>
     </AppContainer>

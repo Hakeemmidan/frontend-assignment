@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { checkIfImageExists, showOneDecimal } from '../general_utils';
 import { AppContext } from '../contexts/AppContext';
+import { Bold, SpaceBetween } from './general_styled_components';
+import { checkIfImageExists, showOneDecimal } from '../general_utils';
 
 const GridContainer = styled.div`
   display: grid;
@@ -10,6 +11,7 @@ const GridContainer = styled.div`
 `;
 
 const GridItem = styled.div`
+  cursor: pointer;
   width: 200px;
   margin: 0px 10px 30px 10px;
   padding-bottom: 13px;
@@ -50,19 +52,52 @@ const PageTitle = styled.h2`
   margin-left: 10px;
 `;
 
+const CloseButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  cursor: pointer;
+  border: 1px solid black;
+`;
+
+const MovieModalTopInfo = styled.div`
+  margin-bottom: 15px;
+`;
+
+const ModalMovieTitle = styled.h2`
+  margin: 0;
+`;
+
+const ModalPoster = styled.img`
+  width: 28vw;
+  max-width: 500px;
+  object-fit: contain;
+`;
+
+const ModalMovieReleaseDate = styled.p`
+  margin-top: 0px;
+`;
+
+const ModalMovieInfoContainer = styled.div`
+  margin: 10px 20px;
+`;
+
 export const CardsContainer = () => {
   const { movies, pageTitle } = useContext(AppContext);
 
   return (
     <>
-    <PageTitle>
-      {pageTitle}
-    </PageTitle>
-    <GridContainer>
-      {movies.map(movie => (
-        <Card key={`movie_card_${movie.id}`} movie={movie} />
-      ))}
-    </GridContainer>
+      <PageTitle>
+        {pageTitle}
+      </PageTitle>
+      <GridContainer>
+        {movies.map(movie => (
+          <Card key={`movie_card_${movie.id}`} movie={movie} />
+        ))}
+      </GridContainer>
     </>
   );
 };
@@ -70,34 +105,80 @@ export const CardsContainer = () => {
 const Card = ({ movie }) => {
   const moviePosterPathPlaceholder = 'https://pbs.twimg.com/profile_images/1243623122089041920/gVZIvphd_400x400.jpg'
   const moviePosterPath = `https://image.tmdb.org/t/p/original${movie.poster_path}`;
-  const [state, setState] = useState({ alt: null, src: null });
+  const [poster, setPoster] = useState({ alt: null, src: null });
+  const { setModal } = useContext(AppContext);
   
   useEffect(() => {
     if (movie.poster_path) {
       // check if image exists if given poster_path. Use it if it does, and use placeholder if not
       checkIfImageExists(moviePosterPath, (exists) => {
-        setState({
+        setPoster({
           alt: exists ? `${movie.title} poster` : `${movie.title} poster placeholder`,
           src: exists ? moviePosterPath : moviePosterPathPlaceholder,
         })
       });
     } else {
       // use placeholders if no poster_path
-      setState({
+      setPoster({
         alt: `${movie.title} poster placeholder`,
         src: moviePosterPathPlaceholder,
       })
     }
 
-    return () => setState({ alt: null, src: null });
+    return () => setPoster({ alt: null, src: null });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleCardClick = () => {
+    setModal({
+      isOpen: true,
+      component: <CardModalContent movie={movie} poster={poster} />,
+    })
+  };
+
   return (
-    <GridItem>
-      <CardImage alt={state.alt} src={state.src}/>
+    <GridItem onClick={handleCardClick}>
+      <CardImage alt={poster.alt} src={poster.src}/>
       <CardRatingBubble>{showOneDecimal(movie.vote_average)}</CardRatingBubble>
       <CardText> {movie.title} </CardText>
     </GridItem>
+  );
+};
+
+const CardModalContent = ({ movie, poster }) => {
+  const { setModal } = useContext(AppContext);
+
+  const handleCloseClick = () => {
+    setModal({
+      isOpen: false,
+      component: null,
+    });
+  };
+
+  return (
+    <>
+      <MovieModalTopInfo>
+        <SpaceBetween>
+          <ModalMovieTitle>{movie.title}</ModalMovieTitle>
+          <CloseButton onClick={handleCloseClick}>╳</CloseButton>
+        </SpaceBetween>
+      </MovieModalTopInfo>
+      <SpaceBetween>
+        <ModalPoster src={poster.src} alt={poster.alt} />
+        <ModalMovieInfoContainer>
+          <ModalMovieReleaseDate>
+            <Bold>Release date: </Bold>
+            {movie.release_date}
+          </ModalMovieReleaseDate>
+          <p>
+            {movie.overview || '(No movie overview available)'}
+          </p>
+          <p>
+            <Bold>{showOneDecimal(movie.vote_average)}</Bold> / 10
+            ({movie.vote_count} total votes)
+          </p>
+        </ModalMovieInfoContainer>
+      </SpaceBetween>
+    </>
   );
 };
