@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { checkIfImageExists } from '../general_utils';
+import { checkIfImageExists, showOneDecimal } from '../general_utils';
 import { AppContext } from '../contexts/AppContext';
 
 const GridContainer = styled.div`
@@ -10,12 +10,29 @@ const GridContainer = styled.div`
 `;
 
 const GridItem = styled.div`
-  margin: 0px 10px 30px 10px;
-  height: 250px;
   width: 200px;
+  margin: 0px 10px 30px 10px;
+  padding-bottom: 13px;
   box-shadow: 0px 5px 17px -4px rgba(0,0,0,0.21);
   border-radius: 3%;
   overflow: hidden;
+  position: relative;
+`;
+
+const CardRatingBubble = styled.div`
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: white;
+  height: 26px;
+  width: 26px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  font-size: 14px;
+  font-weight: bold;
 `;
 
 const CardImage = styled.img`
@@ -26,6 +43,7 @@ const CardImage = styled.img`
 
 const CardText = styled.div`
   text-align: center;
+  margin-top: 5px;
 `;
 
 const PageTitle = styled.h2`
@@ -52,7 +70,7 @@ export const CardsContainer = () => {
 const Card = ({ movie }) => {
   const moviePosterPathPlaceholder = 'https://pbs.twimg.com/profile_images/1243623122089041920/gVZIvphd_400x400.jpg'
   const moviePosterPath = `https://image.tmdb.org/t/p/original${movie.poster_path}`;
-  const [state, setState] = useState({ alt: null, src: null })
+  const [state, setState] = useState({ alt: null, src: null });
   
   useEffect(() => {
     if (movie.poster_path) {
@@ -78,6 +96,7 @@ const Card = ({ movie }) => {
   return (
     <GridItem>
       <CardImage alt={state.alt} src={state.src}/>
+      <CardRatingBubble>{showOneDecimal(movie.vote_average)}</CardRatingBubble>
       <CardText> {movie.title} </CardText>
     </GridItem>
   );
