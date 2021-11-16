@@ -14,13 +14,14 @@ const AppContainer = styled.div`
 `;
 
 const App = () => {
-  const { setMovies } = useContext(AppContext);
+  const { setMovies, setPageTitle, MOST_RECENT_MOVIES } = useContext(AppContext);
 
   useEffect(() => {
     const setupInitMovies = async () => {
       let apiRes = await getMovies();
       apiRes = await apiRes.json();
       setMovies(apiRes.results);
+      setPageTitle(MOST_RECENT_MOVIES)
     };
     setupInitMovies();
   // eslint-disable-next-line react-hooks/exhaustive-deps

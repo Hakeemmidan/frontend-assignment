@@ -59,7 +59,7 @@ export const Navbar = () => {
 const SearchField = () => {
   const inputRef = useRef();
   const isThrottling = useRef(false);
-  const { setMovies } = useContext(AppContext);
+  const { setMovies, setPageTitle, MOST_RECENT_MOVIES, SEARCH_RESULT } = useContext(AppContext);
 
   // Throttled input change handler
   // Source: https://www.codingdeft.com/posts/react-debounce-throttle
@@ -76,9 +76,12 @@ const SearchField = () => {
       if (!inputRef.current.value.trim()) {
         // if input is emptied, then get most recent movies using 'getMovies'
         apiRes = await getMovies();
+        setPageTitle(MOST_RECENT_MOVIES);
+
       } else {
         // if not empty, then search movies using 'searchMovies'
         apiRes = await searchMovies(inputRef.current.value);
+        setPageTitle(SEARCH_RESULT);
       }
       apiRes = await apiRes.json();
       setMovies(apiRes.results);

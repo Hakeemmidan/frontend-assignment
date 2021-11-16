@@ -28,15 +28,24 @@ const CardText = styled.div`
   text-align: center;
 `;
 
+const PageTitle = styled.h2`
+  margin-left: 10px;
+`;
+
 export const CardsContainer = () => {
-  const { movies } = useContext(AppContext);
+  const { movies, pageTitle } = useContext(AppContext);
 
   return (
+    <>
+    <PageTitle>
+      {pageTitle}
+    </PageTitle>
     <GridContainer>
       {movies.map(movie => (
         <Card key={`movie_card_${movie.id}`} movie={movie} />
       ))}
     </GridContainer>
+    </>
   );
 };
 
