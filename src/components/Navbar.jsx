@@ -20,6 +20,7 @@ const Logo = styled.img`
   height: 4vw;
   min-height: 42px;
   max-height: 70px;
+  cursor: pointer;
   @media screen and (max-width: ${MOBILE_MAX_WIDTH}px) {
     height: 42px;
   };
@@ -48,16 +49,27 @@ const SearchFieldInput = styled.input`
 `;
 
 export const Navbar = () => {
+  const inputRef = useRef();
+  const { setMovies, setPageTitle, MOST_RECENT_MOVIES } = useContext(AppContext);
+
+  const handleLogoClick = async () => {
+    // Get most recent movies and reset search field on logo click
+    let apiRes = await getMovies();
+    apiRes = await apiRes.json();
+    inputRef.current.value = '';
+    setMovies(apiRes.results);
+    setPageTitle(MOST_RECENT_MOVIES);
+  };
+
   return (
     <NavbarContainer>
-      <Logo src={logo} alt="Timescale logo" />
-      <SearchField />
+      <Logo onClick={handleLogoClick} src={logo} alt="Timescale logo" />
+      <SearchField inputRef={inputRef} />
     </NavbarContainer>
   )
 }
 
-const SearchField = () => {
-  const inputRef = useRef();
+const SearchField = ({ inputRef }) => {
   const isThrottling = useRef(false);
   const { setMovies, setPageTitle, MOST_RECENT_MOVIES, SEARCH_RESULT } = useContext(AppContext);
 
@@ -77,7 +89,6 @@ const SearchField = () => {
         // if input is emptied, then get most recent movies using 'getMovies'
         apiRes = await getMovies();
         setPageTitle(MOST_RECENT_MOVIES);
-
       } else {
         // if not empty, then search movies using 'searchMovies'
         apiRes = await searchMovies(inputRef.current.value);
