@@ -35,8 +35,8 @@ export const Modal = () => {
   if (!modal.isOpen) return null;
 
   return (
-    <ModalBackground className="modal-background" onClick={handleCloseModal}>
-      <ModalChild className="modal-child" onClick={(e) => e.stopPropagation()}>
+    <ModalBackground data-testid='modal_background' className="modal-background" onClick={handleCloseModal}>
+      <ModalChild data-testid='modal_child' className="modal-child" onClick={(e) => e.stopPropagation()}>
         {modal.component}
       </ModalChild>
     </ModalBackground>

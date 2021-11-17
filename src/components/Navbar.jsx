@@ -1,4 +1,4 @@
-import React, { useRef, useContext } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import logo from '../images/logo.svg';
 import { AppContext } from '../contexts/AppContext';
@@ -49,14 +49,14 @@ const SearchFieldInput = styled.input`
 `;
 
 export const Navbar = () => {
-  const inputRef = useRef();
+  const [inputVal, setInputVal] = React.useState('');
   const { setMovies, setPageTitle, MOST_RECENT_MOVIES } = useContext(AppContext);
 
   const handleLogoClick = async () => {
     // Get most recent movies and reset search field on logo click
     let apiRes = await getMovies();
     apiRes = await apiRes.json();
-    inputRef.current.value = '';
+    setInputVal('');
     setMovies(apiRes.results);
     setPageTitle(MOST_RECENT_MOVIES);
   };
@@ -64,49 +64,44 @@ export const Navbar = () => {
   return (
     <NavbarContainer>
       <Logo onClick={handleLogoClick} src={logo} alt="Timescale logo" />
-      <SearchField inputRef={inputRef} />
+      <SearchField inputVal={inputVal} setInputVal={setInputVal} />
     </NavbarContainer>
   )
 }
 
-const SearchField = ({ inputRef }) => {
-  const isThrottling = useRef(false);
+const SearchField = ({ inputVal, setInputVal }) => {
   const { setMovies, setPageTitle, MOST_RECENT_MOVIES, SEARCH_RESULT } = useContext(AppContext);
 
   // Throttled input change handler
   // Source: https://www.codingdeft.com/posts/react-debounce-throttle
-  const handleInputChange = async () => {
-    if (isThrottling.current) return; // If function is throttling, don't do anything
+  const handleInputSubmit = async (e) => {
+    const newInputVal = e.target.value;
+    let apiRes;
 
-    const THROTTLE_WAIT_TIME = 500; // in 'ms'
-    isThrottling.current = true;
-    
-    setTimeout(async () => {
-      isThrottling.current = false;
-      // Make search API call
-      let apiRes;
-      if (!inputRef.current.value.trim()) {
-        // if input is emptied, then get most recent movies using 'getMovies'
-        apiRes = await getMovies();
-        setPageTitle(MOST_RECENT_MOVIES);
-      } else {
-        // if not empty, then search movies using 'searchMovies'
-        apiRes = await searchMovies(inputRef.current.value);
-        setPageTitle(SEARCH_RESULT);
-      }
-      apiRes = await apiRes.json();
-      setMovies(apiRes.results);
-    }, THROTTLE_WAIT_TIME);
+    if (!newInputVal) {
+      // if input is emptied, then get most recent movies using 'getMovies'
+      apiRes = await getMovies();
+      setPageTitle(MOST_RECENT_MOVIES);
+    } else {
+      // if not empty, then search movies using 'searchMovies'
+      apiRes = await searchMovies(newInputVal);
+      setPageTitle(SEARCH_RESULT);
+    }
+
+    apiRes = await apiRes.json();
+    setMovies(apiRes.results);
   };
 
   return (
-    <SearchFieldContainer>
+    <SearchFieldContainer data-testid='search_field'>
       <MagnifyingGlass />
       <SearchFieldInput
+        data-testid='search_field_input'
         type="text"
         placeholder="Search for a movie" 
-        onChange={handleInputChange}
-        ref={inputRef}
+        onChange={(e) => setInputVal(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Enter') handleInputSubmit(e) }}
+        value={inputVal}
       />
     </SearchFieldContainer>
   )

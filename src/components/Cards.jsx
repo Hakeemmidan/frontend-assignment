@@ -137,7 +137,7 @@ const Card = ({ movie }) => {
   };
 
   return (
-    <GridItem onClick={handleCardClick}>
+    <GridItem data-testid='movie_card' onClick={handleCardClick}>
       <CardImage alt={poster.alt} src={poster.src}/>
       <CardRatingBubble>{showOneDecimal(movie.vote_average)}</CardRatingBubble>
       <CardText> {movie.title} </CardText>
@@ -160,7 +160,7 @@ const CardModalContent = ({ movie, poster }) => {
       <MovieModalTopInfo>
         <SpaceBetween>
           <ModalMovieTitle>{movie.title}</ModalMovieTitle>
-          <CloseButton onClick={handleCloseClick}>╳</CloseButton>
+          <CloseButton data-testid='modal_close' onClick={handleCloseClick}>╳</CloseButton>
         </SpaceBetween>
       </MovieModalTopInfo>
       <SpaceBetween>

@@ -26,7 +26,12 @@ const App = () => {
       setPageTitle(MOST_RECENT_MOVIES)
     };
     setupInitMovies();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    return () => {
+      setMovies([]);
+      setPageTitle('');
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
