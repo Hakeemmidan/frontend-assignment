@@ -38,3 +38,43 @@ The main features that should be implemented
 
 [movieDB]: https://developers.themoviedb.org/3/getting-started/introduction
 [figma]: https://www.figma.com/file/KKkrDYSUAuRavpqRingRdZ/Movie-Grid?node-id=0%3A1
+
+_____
+### Solution
+(wrriten by submitter)
+
+Run tests
+```
+yarn test
+```
+
+Start server
+```
+yarn start
+```
+
+#### Screenshots
+<img src="./src/images/main_desktop.png" width="600" />
+
+(main desktop)
+
+<img src="./src/images/main_mobile.png" width="300" />
+
+(main mobile)
+
+<img src="./src/images/modal_desktop.png" width="600" />
+
+(modal desktop)
+
+<img src="./src/images/modal_mobile.png" width="300" />
+
+(modal mobile)
+
+<img src="./src/images/search_desktop.png" width="600" />
+
+(search desktop)
+
+<img src="./src/images/search_mobile.png" width="300" />
+
+(search mobile)
+
