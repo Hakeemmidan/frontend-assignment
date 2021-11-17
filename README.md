@@ -53,6 +53,14 @@ Start server
 yarn start
 ```
 
+#### Features
+- Specs
+- Responsive UI
+- Matching Figma design
+- All styled components are `styled-components` (package name)
+- Debounced search
+  - When typing in the search field, an API call happens only every 300ms (to not exhaust the API by calling on every character change)
+
 #### Screenshots
 <img src="./src/images/main_desktop.png" width="600" />
 

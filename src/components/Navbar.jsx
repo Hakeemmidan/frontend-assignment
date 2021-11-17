@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import styled from 'styled-components';
 import logo from '../images/logo.svg';
 import { AppContext } from '../contexts/AppContext';
 import { getMovies, searchMovies } from '../api_utils/movie_db.api';
 import { MagnifyingGlass } from './MagnifyingGlass'
 import { MOBILE_MAX_WIDTH } from '../constants';
+import { debounce } from '../general_utils';
 
 const NavbarContainer = styled.div`
   display: flex;
@@ -74,7 +75,7 @@ const SearchField = ({ inputVal, setInputVal }) => {
 
   // Throttled input change handler
   // Source: https://www.codingdeft.com/posts/react-debounce-throttle
-  const handleInputSubmit = async (e) => {
+  const search = debounce(async (e) => {
     const newInputVal = e.target.value;
     let apiRes;
 
@@ -90,7 +91,17 @@ const SearchField = ({ inputVal, setInputVal }) => {
 
     apiRes = await apiRes.json();
     setMovies(apiRes.results);
-  };
+  }, 300);
+
+  const searchHandler = useCallback((e) => {
+    search(e);
+  }, []);
+
+  // Debounce onChange handler structure source: https://stackoverflow.com/a/60789443/7974948
+  const handleInputChange = (e) => {
+    setInputVal(e.target.value);
+    searchHandler(e);
+  }
 
   return (
     <SearchFieldContainer data-testid='search_field'>
@@ -99,8 +110,8 @@ const SearchField = ({ inputVal, setInputVal }) => {
         data-testid='search_field_input'
         type="text"
         placeholder="Search for a movie" 
-        onChange={(e) => setInputVal(e.target.value)}
-        onKeyDown={(e) => { if (e.key === 'Enter') handleInputSubmit(e) }}
+        onChange={handleInputChange}
+        onKeyDown={(e) => { if (e.key === 'Enter') handleInputChange(e) }}
         value={inputVal}
       />
     </SearchFieldContainer>
